@@ -1,0 +1,54 @@
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-height: calc(var(--size-control-md) + var(--space-6) * 2);
+  padding: var(--space-6) var(--space-8);
+  border-bottom: var(--space-1) solid var(--color-border-subtle);
+  background-color: var(--color-surface-muted);
+}
+
+/* In the sidebar and the menu the logo keeps its own width. */
+.links > a {
+  align-self: flex-start;
+}
+
+.sidebar {
+  display: none;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.divider {
+  width: 100%;
+  margin: var(--space-4) 0;
+  border: 0;
+  border-top: var(--space-1) solid var(--color-illustration-kraft-deep);
+}
+
+@media (min-width: 1024px) {
+  .topBar {
+    display: none;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    gap: var(--space-9);
+    width: var(--size-sidebar-width);
+    height: 100vh;
+    padding: var(--space-8);
+    overflow-y: auto;
+    background-color: var(--color-surface-kraft);
+  }
+}

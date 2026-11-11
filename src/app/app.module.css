@@ -1,0 +1,36 @@
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Main takes focus from the skip link; the ring would wrap the whole page. */
+.main:focus-visible {
+  outline-offset: calc(var(--space-2) * -1);
+}
+
+.admin {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.adminContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .admin {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .adminContent {
+    min-height: 100vh;
+  }
+}

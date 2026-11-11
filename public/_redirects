@@ -1,0 +1,2 @@
+# Single-page app fallback for Cloudflare Pages: every route loads index.html.
+/*    /index.html   200

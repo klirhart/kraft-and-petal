@@ -1,0 +1,315 @@
+.secondary {
+  color: var(--color-text-secondary);
+}
+
+.typed {
+  overflow-wrap: anywhere;
+}
+
+/* Home hero: everything on the centre line, headline first. */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-9);
+  text-align: center;
+}
+
+.heroTitle {
+  position: relative;
+  width: 100%;
+  max-width: calc(var(--size-container-narrow) * 1.4);
+}
+
+/* The arch is for wide screens. Below them the same words show as text. */
+.heroArch {
+  display: none;
+  width: 100%;
+  height: auto;
+}
+
+.heroTitleText {
+  display: block;
+}
+
+.heroArt {
+  width: 100%;
+  max-width: var(--size-panel-md);
+}
+
+.heroCopy {
+  max-width: var(--size-panel-md);
+  color: var(--color-text-primary);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6) var(--space-9);
+}
+
+.heroFacts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  color: var(--color-text-tertiary);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+  min-width: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6) var(--space-9);
+}
+
+.steps {
+  display: grid;
+  gap: var(--space-9);
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-10) var(--space-9);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-base);
+  box-shadow: var(--shadow-1);
+  text-align: center;
+}
+
+.stepArt {
+  width: calc(var(--size-thumbnail) * 2);
+  height: calc(var(--size-thumbnail) * 2);
+}
+
+.more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.split {
+  display: grid;
+  gap: var(--space-11);
+  align-items: start;
+}
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-9);
+}
+
+.bullets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding-inline-start: var(--space-10);
+}
+
+.plainList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  list-style: none;
+}
+
+.address {
+  display: flex;
+  flex-direction: column;
+  font-style: normal;
+}
+
+.divider {
+  width: calc(var(--size-thumbnail) * 2);
+  height: calc(var(--size-thumbnail) * 2);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* A soft card: raised surface, round corners, gentle shadow. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-9);
+  min-width: 0;
+  padding: var(--space-9);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-base);
+  box-shadow: var(--shadow-1);
+}
+
+.panel > * {
+  max-width: 100%;
+}
+
+/* Forms and lists fill the card; text keeps its natural width. */
+.panel > form,
+.panel > ul:not(.bullets):not(.plainList),
+.panel > div {
+  align-self: stretch;
+}
+
+.panels {
+  display: grid;
+  gap: var(--space-9);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+  min-width: 0;
+}
+
+/* Page intro: a display headline with a drawing beside it. */
+.intro {
+  display: grid;
+  gap: var(--space-10);
+  align-items: center;
+}
+
+.introText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-9);
+  min-width: 0;
+}
+
+.introArt {
+  width: 100%;
+  max-width: var(--size-panel-md);
+  margin-inline: auto;
+}
+
+.contactArt {
+  width: calc(var(--size-thumbnail) * 3);
+  max-width: 100%;
+  height: auto;
+}
+
+/* Sign-in pages: the drawing on a tinted panel, the form beside it. */
+.auth {
+  display: grid;
+  gap: var(--space-10);
+  align-items: start;
+}
+
+.authArt {
+  display: none;
+  padding: var(--space-11) var(--space-10);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-subtle);
+}
+
+.authBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  width: 100%;
+  max-width: var(--size-container-narrow);
+  min-width: 0;
+  margin-inline: auto;
+}
+
+@media not all and (min-width: 480px) {
+  .heroActions,
+  .heroActions > a:first-child,
+  .more > button {
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero {
+    gap: var(--space-10);
+    padding-block-end: var(--space-10);
+  }
+
+  .heroArch {
+    display: block;
+  }
+
+  /* Still the heading's text for assistive technology; the arch shows it. */
+  .heroTitleText {
+    position: absolute;
+    width: var(--space-1);
+    height: var(--space-1);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .hero > .heroArt {
+    display: none;
+  }
+
+  /* The drawing's ground line sits close to the copy under it. */
+  .heroCopy {
+    margin-top: calc(var(--space-9) * -1);
+  }
+
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .split {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: var(--space-10);
+  }
+
+  .panel {
+    padding: var(--space-10);
+  }
+
+  .panels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .panelWide {
+    grid-column: 1 / -1;
+  }
+
+  .intro {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-12);
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-12);
+  }
+
+  .authArt {
+    position: sticky;
+    top: var(--space-10);
+    display: block;
+  }
+
+  .authBody {
+    margin-inline: 0;
+  }
+}

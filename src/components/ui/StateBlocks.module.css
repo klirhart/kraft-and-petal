@@ -1,0 +1,69 @@
+.loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  /* Holds the page open while nothing shows yet, so the footer does not jump. */
+  min-height: calc(var(--size-control-md) * 6);
+}
+
+.slow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: var(--size-container-narrow);
+  margin-inline: auto;
+  padding-block: var(--space-11);
+  text-align: center;
+}
+
+.empty {
+  padding: var(--space-12) var(--space-8);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-base);
+  box-shadow: var(--shadow-1);
+}
+
+.art {
+  width: calc(var(--size-thumbnail) * 2);
+  height: calc(var(--size-thumbnail) * 2);
+}
+
+/* The not-found drawing carries the big "404". */
+.artWide {
+  width: calc(var(--size-thumbnail) * 4);
+  max-width: 100%;
+  height: auto;
+}
+
+/* Hide the drawing when the viewport is too short to also show the action. */
+@media (max-height: 480px) {
+  .art,
+  .artWide {
+    display: none;
+  }
+}
+
+.heading {
+  border-radius: var(--radius-xs);
+}
+
+.message {
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6) var(--space-9);
+}

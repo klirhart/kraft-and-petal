@@ -1,0 +1,66 @@
+name: CI
+
+# Runs on sample data. No Supabase project and no secret is needed, so pull
+# requests from forks get the same checks.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, types, tests, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The secret scan reads every commit, not just the last one.
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit, accessibility and database rule tests
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: No secret in the built site
+        run: npm run check:secrets
+      - name: No secret in Git history
+        run: npm run check:secrets:history
+
+  browser:
+    name: Keyboard journeys and contrast in a real browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Keyboard-only journeys and axe scans
+        run: npm run test:e2e
+      - name: Keep the traces when a journey fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results
+          retention-days: 7

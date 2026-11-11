@@ -1,0 +1,98 @@
+name: Database backup
+
+# The free Supabase plan has no automatic backups, so this job exports one.
+#
+#   Every Monday 03:00 UTC      weekly file, kept 56 days (the last 8)
+#   First Monday of the month   the same export, marked monthly, kept 365 days,
+#                               or the repository's artifact limit if lower
+#   By hand (Run workflow)      before a migration reaches the live database
+#
+# The export is encrypted inside the job, before it is uploaded. Nothing
+# unencrypted is stored. A failed run emails the repository owner.
+#
+# Setup, once the Supabase project exists (README.md, "Backups"):
+#   Variable  SUPABASE_URL        turns this job on
+#   Secret    SUPABASE_DB_URL     database connection string, with its password
+#   Secret    BACKUP_PASSPHRASE   long random passphrase; keep one copy offline
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: What this export is for
+        type: choice
+        default: manual
+        options: [manual, weekly, monthly]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: database-backup
+  cancel-in-progress: false
+
+env:
+  # pg_dump must be at least as new as the database. Match the Postgres major
+  # version shown in Supabase: Project settings > Infrastructure.
+  PG_MAJOR: '17'
+
+jobs:
+  backup:
+    name: Export and encrypt
+    # Until a Supabase project exists there is nothing to back up.
+    if: vars.SUPABASE_URL != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the PostgreSQL client
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl --fail --silent --show-error --location \
+            --output /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          . /etc/os-release
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt ${VERSION_CODENAME}-pgdg main" |
+            sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null
+          sudo apt-get update --quiet
+          sudo apt-get install --yes --quiet "postgresql-client-${PG_MAJOR}"
+          echo "/usr/lib/postgresql/${PG_MAJOR}/bin" >>"$GITHUB_PATH"
+
+      - name: Weekly or monthly
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          ASKED: ${{ inputs.kind }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            kind="$ASKED"
+          elif [ "$(date -u +%-d)" -le 7 ]; then
+            kind=monthly
+          else
+            kind=weekly
+          fi
+          case "$kind" in
+            monthly) keep=365 ;;
+            *) keep=56 ;;
+          esac
+          echo "kind=$kind" >>"$GITHUB_OUTPUT"
+          echo "keep=$keep" >>"$GITHUB_OUTPUT"
+          echo "stamp=$(date -u +%Y-%m-%d)" >>"$GITHUB_OUTPUT"
+
+      - name: Export and encrypt
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          KIND: ${{ steps.plan.outputs.kind }}
+        run: bash scripts/backup.sh "$KIND" backups
+
+      - name: Store the encrypted file
+        uses: actions/upload-artifact@v4
+        with:
+          name: kraft-petal-backup-${{ steps.plan.outputs.kind }}-${{ steps.plan.outputs.stamp }}-run${{ github.run_number }}
+          path: backups/*.tar.gz.gpg
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: ${{ steps.plan.outputs.keep }}

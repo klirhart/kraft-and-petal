@@ -1,0 +1,320 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+/* Only the control is short; the label, hint and error keep the full line. */
+.short .control {
+  max-width: 12ch;
+}
+
+.label {
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.field[data-disabled] .label {
+  color: var(--color-text-secondary);
+}
+
+.optional {
+  font-weight: var(--font-weight-base);
+  color: var(--color-text-secondary);
+}
+
+.control {
+  position: relative;
+  display: flex;
+}
+
+/* Default */
+.input {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--size-control-md);
+  padding: var(--space-6) var(--space-8);
+  border: var(--space-1) solid var(--color-border-strong);
+  border-radius: var(--radius-xs);
+  background-color: var(--color-surface-base);
+  color: var(--color-text-primary);
+  /* Body role: 16px keeps iOS Safari from zooming the page on focus. */
+  font-size: var(--font-size-lg);
+  line-height: var(--font-line-height-lg);
+  transition: box-shadow var(--motion-duration-instant) var(--motion-easing-standard);
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+  opacity: 1;
+}
+
+.input[data-adorned] {
+  padding-left: calc(var(--space-8) + var(--size-icon-sm) + var(--space-6));
+}
+
+.input[data-toggle] {
+  padding-right: var(--size-control-md);
+}
+
+.textarea {
+  min-height: calc(var(--font-line-height-lg) * 3 + var(--space-8) * 2);
+  max-height: calc(var(--font-line-height-lg) * 12 + var(--space-8) * 2);
+  padding: var(--space-8);
+  resize: vertical;
+}
+
+.select {
+  appearance: none;
+  padding-right: calc(var(--space-8) + var(--size-icon-sm) + var(--space-6));
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.adornment,
+.trailing {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  /* A press on the decoration lands on the control underneath. */
+  pointer-events: none;
+}
+
+.adornment {
+  left: var(--space-8);
+  width: var(--size-icon-sm);
+  justify-content: center;
+}
+
+.trailing {
+  right: var(--space-8);
+}
+
+.toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-control-md);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.toggle:active {
+  background-color: var(--color-surface-kraft);
+}
+
+.toggle:disabled {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+/* Hover: an inset ring makes the boundary read as 2px with no layout shift. */
+@media (hover: hover) {
+  .input:hover:not(:disabled):not([aria-invalid='true']) {
+    box-shadow: inset 0 0 0 var(--space-1) var(--color-border-strong);
+  }
+
+  .toggle:hover:not(:disabled) {
+    background-color: var(--color-surface-subtle);
+  }
+}
+
+/* Focus-visible and active: the global ring; the border does not change. */
+
+/* Error */
+.input[aria-invalid='true'] {
+  border-color: var(--color-status-error);
+  box-shadow: inset 0 0 0 var(--space-1) var(--color-status-error);
+}
+
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-base);
+  color: var(--color-status-error);
+}
+
+.below {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.hint,
+.counter {
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-base);
+  color: var(--color-text-secondary);
+}
+
+.counter {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Read-only (also the loading state of a text control) */
+.input:read-only:not(select) {
+  border-color: var(--color-border-subtle);
+  background-color: var(--color-surface-subtle);
+  box-shadow: none;
+}
+
+.field[aria-busy='true'] .input {
+  padding-right: calc(var(--space-8) + var(--size-icon-sm) + var(--space-6));
+  cursor: progress;
+}
+
+/* Disabled */
+.input:disabled {
+  border-color: var(--color-border-subtle);
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-disabled);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ---------- Checkbox and radio ---------- */
+
+.choiceField,
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-6);
+  min-height: var(--size-control-md);
+  padding: var(--space-8) 0;
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+  cursor: pointer;
+}
+
+.choice > span {
+  /* Centres the first line of the label on the box. */
+  padding-top: var(--space-2);
+}
+
+.choice[data-disabled] {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+.checkbox,
+.radio {
+  flex: none;
+  display: grid;
+  place-content: center;
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+  margin: 0;
+  appearance: none;
+  border: var(--space-2) solid var(--color-border-strong);
+  background-color: var(--color-surface-base);
+  /* The glyph, drawn on the dark fill of a checked box. */
+  color: var(--color-text-on-inverse);
+  cursor: inherit;
+  transition:
+    background-color var(--motion-duration-instant) var(--motion-easing-standard),
+    border-color var(--motion-duration-instant) var(--motion-easing-standard);
+}
+
+.checkbox {
+  border-radius: var(--radius-xs);
+}
+
+.radio {
+  border-radius: var(--radius-md);
+}
+
+/* The glyph: a check drawn with borders, or a dot. */
+.checkbox::before {
+  content: '';
+  width: var(--space-5);
+  height: calc(var(--space-5) + var(--space-4));
+  margin-top: calc(var(--space-2) * -1);
+  border: solid currentColor;
+  border-width: 0 var(--space-2) var(--space-2) 0;
+  transform: rotate(45deg) scale(0);
+}
+
+.radio::before {
+  content: '';
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-md);
+  background-color: currentColor;
+  transform: scale(0);
+}
+
+.checkbox:checked::before {
+  transform: rotate(45deg) scale(1);
+}
+
+.radio:checked::before {
+  transform: scale(1);
+}
+
+/* Checked: the dark green band, not lime, so the box keeps a 3:1 boundary. */
+.checkbox:checked,
+.radio:checked {
+  border-color: var(--color-surface-inverse);
+  background-color: var(--color-surface-inverse);
+}
+
+@media (hover: hover) {
+  .checkbox:hover:not(:disabled):not(:checked),
+  .radio:hover:not(:disabled):not(:checked) {
+    background-color: var(--color-surface-subtle);
+  }
+
+  .checkbox:checked:hover:not(:disabled),
+  .radio:checked:hover:not(:disabled) {
+    border-color: var(--color-text-inverse);
+    background-color: var(--color-text-inverse);
+  }
+}
+
+.checkbox:active:not(:disabled):not(:checked),
+.radio:active:not(:disabled):not(:checked) {
+  background-color: var(--color-surface-kraft);
+}
+
+.checkbox:checked:active:not(:disabled),
+.radio:checked:active:not(:disabled) {
+  border-color: var(--color-text-primary);
+  background-color: var(--color-text-primary);
+}
+
+.checkbox[aria-invalid='true'] {
+  border-color: var(--color-status-error);
+}
+
+.checkbox:disabled,
+.radio:disabled {
+  border-color: var(--color-border-subtle);
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-disabled);
+}

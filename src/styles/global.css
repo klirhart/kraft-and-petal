@@ -1,0 +1,314 @@
+/* Both faces are variable fonts under the SIL Open Font License, served from
+   this site (public/fonts, licences alongside). Nothing loads from elsewhere. */
+@font-face {
+  font-family: Figtree;
+  src: url("/fonts/figtree-latin-wght-normal.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Fraunces;
+  src: url("/fonts/fraunces-latin-soft-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Keeps a focused element clear of the dashboard's sticky top bar (WCAG 2.4.11). */
+  scroll-padding-top: calc(var(--size-control-md) + var(--space-6) * 3);
+  /* Locking scroll for an overlay must not shift the layout. */
+  scrollbar-gutter: stable;
+}
+
+/* Set by the overlay primitive: the page behind must not scroll. */
+html[data-overlay-open] {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-family-stack);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-base);
+  line-height: var(--font-line-height-base);
+  color: var(--color-text-primary);
+  background: var(--color-surface-muted);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+fieldset,
+legend {
+  margin: 0;
+  padding: 0;
+}
+
+fieldset {
+  min-width: 0;
+  border: 0;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+li,
+dd,
+dt,
+td,
+th,
+label,
+legend {
+  overflow-wrap: anywhere;
+}
+
+/*
+ * Text roles (guidelines 2.5). A role fixes size, line height and weight
+ * together. Headings get their role by default; anything else opts in with a
+ * class. A role is a look, not a level: an h2 may use `type-heading-3`.
+ * Heading and display roles use the serif display face, with its soft axis
+ * turned up; titles and everything below stay in the body face.
+ */
+h1,
+h2,
+h3,
+.type-heading-1,
+.type-heading-2,
+.type-heading-3,
+.type-display,
+.font-display {
+  font-family: var(--font-family-display);
+  font-variation-settings: 'SOFT' 100;
+}
+
+h1,
+.type-heading-1 {
+  font-size: var(--font-size-2xl);
+  line-height: var(--font-line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+h2,
+.type-heading-2 {
+  font-size: var(--font-size-xl);
+  line-height: var(--font-line-height-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+h3,
+.type-heading-3 {
+  font-size: var(--font-size-xl);
+  line-height: var(--font-line-height-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.type-display {
+  font-size: var(--font-size-2xl);
+  line-height: var(--font-line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+h4,
+.type-title {
+  font-size: var(--font-size-lg);
+  line-height: var(--font-line-height-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+.type-body {
+  font-size: var(--font-size-lg);
+  line-height: var(--font-line-height-lg);
+  font-weight: var(--font-weight-base);
+}
+
+.type-ui {
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+  font-weight: var(--font-weight-base);
+}
+
+.type-ui-strong {
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.type-caption {
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-base);
+  font-weight: var(--font-weight-base);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+/* Coral accent words inside a display headline. Large text only. */
+.text-accent {
+  color: var(--color-accent);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Links (guidelines 4.5): always underlined, so colour is never the only cue.
+ * `:where()` keeps these at zero specificity, so a component that gives a
+ * link another look (button, navigation item, chip) wins without a fight.
+ */
+:where(a) {
+  border-radius: var(--radius-xs);
+  color: var(--color-text-inverse);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--space-1);
+  text-underline-offset: var(--space-3);
+  transition:
+    color var(--motion-duration-instant) var(--motion-easing-standard),
+    background-color var(--motion-duration-instant) var(--motion-easing-standard);
+}
+
+@media (hover: hover) {
+  :where(a:hover) {
+    color: var(--color-text-primary);
+    text-decoration-thickness: var(--space-2);
+  }
+}
+
+:where(a:active) {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-primary);
+  text-decoration-thickness: var(--space-2);
+}
+
+/* A link that stands alone gets a full-height tap area. */
+.link-standalone {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-height: var(--size-control-md);
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+  font-weight: var(--font-weight-medium);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  touch-action: manipulation;
+}
+
+a,
+label,
+summary {
+  touch-action: manipulation;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* The one focus indicator, for every focusable element (guidelines 4.1). */
+:focus-visible {
+  outline: var(--space-2) solid var(--color-focus-ring);
+  outline-offset: var(--space-2);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: var(--space-1);
+  height: var(--space-1);
+  margin: calc(var(--space-1) * -1);
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 768px) {
+  h1,
+  .type-heading-1 {
+    font-size: var(--font-size-3xl);
+    line-height: var(--font-line-height-3xl);
+  }
+
+  h2,
+  .type-heading-2 {
+    font-size: var(--font-size-2xl);
+    line-height: var(--font-line-height-2xl);
+  }
+
+  .type-display {
+    font-size: var(--font-size-4xl);
+    line-height: var(--font-line-height-4xl);
+  }
+}
+
+@media (min-width: 1024px) {
+  .type-display {
+    font-size: var(--font-size-5xl);
+    line-height: var(--font-line-height-5xl);
+  }
+}
+
+/* The dense role exists only for dashboard tables on wide screens. */
+@media (min-width: 1024px) {
+  .type-dense {
+    font-size: var(--font-size-sm);
+    line-height: var(--font-line-height-base);
+  }
+}
+
+/*
+ * Reduced motion: nothing slides, scales or pulses. Elements marked
+ * `data-spin` (the spinner) may keep turning.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *:not([data-spin]),
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

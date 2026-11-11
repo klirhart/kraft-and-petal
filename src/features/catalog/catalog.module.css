@@ -1,0 +1,317 @@
+.image {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--color-surface-subtle);
+}
+
+.portrait {
+  aspect-ratio: 4 / 5;
+}
+
+.square {
+  aspect-ratio: 1;
+}
+
+.art,
+.photo,
+.placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.photo {
+  object-fit: cover;
+}
+
+.placeholder {
+  padding: 25%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--size-card-min), 1fr));
+  gap: var(--space-8);
+  list-style: none;
+}
+
+.gridItem {
+  display: flex;
+  min-width: 0;
+}
+
+.card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cardMedia {
+  position: relative;
+}
+
+/* Stock badge on the corner of the picture. */
+.cardBadge {
+  position: absolute;
+  inset-block-start: var(--space-6);
+  inset-inline-start: var(--space-6);
+  display: flex;
+}
+
+.cardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding: var(--space-8);
+}
+
+/* Quick add: an outlined pill that fills with lime under the pointer. */
+.card .quickAdd {
+  /* Full width already; slim sides keep the label on one line in a narrow card. */
+  padding-inline: var(--space-8);
+}
+
+@media (hover: hover) {
+  .card .quickAdd:hover:not(:disabled):not([aria-busy='true']) {
+    border-color: var(--color-text-primary);
+    background-color: var(--color-action-primary);
+    color: var(--color-text-on-action);
+  }
+}
+
+.card .quickAdd:active:not(:disabled):not([aria-busy='true']) {
+  border-color: var(--color-text-primary);
+  background-color: var(--color-action-primary-active);
+  color: var(--color-text-on-action);
+}
+
+.cardText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.cardName {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.cardName a {
+  color: var(--color-text-primary);
+  text-decoration-line: none;
+}
+
+/* The clamped heading clips overflow, so the ring draws inside the link. */
+.cardName a:focus-visible {
+  outline-offset: calc(var(--space-2) * -1);
+}
+
+.clamp {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.secondary {
+  color: var(--color-text-secondary);
+}
+
+.price {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-height: var(--size-control-md);
+  padding: var(--space-6) var(--space-9);
+  border: var(--space-1) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-base);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+  font-weight: var(--font-weight-medium);
+  text-decoration-line: none;
+}
+
+@media (hover: hover) {
+  .chip:hover {
+    background-color: var(--color-surface-subtle);
+    color: var(--color-text-primary);
+  }
+}
+
+.chip:active {
+  background-color: var(--color-surface-kraft);
+  color: var(--color-text-primary);
+}
+
+/* The chosen chip: the dark green band, plus a check mark, so colour is not the only cue. */
+.chip[aria-current='true'] {
+  border-color: var(--color-surface-inverse);
+  background-color: var(--color-surface-inverse);
+  color: var(--color-text-on-inverse);
+}
+
+@media (hover: hover) {
+  .chip[aria-current='true']:hover {
+    border-color: var(--color-text-inverse);
+    background-color: var(--color-text-inverse);
+    color: var(--color-text-on-inverse);
+  }
+}
+
+.detail {
+  display: grid;
+  gap: var(--space-10);
+}
+
+.detailMedia {
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-1);
+}
+
+.detailBody {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-10);
+  min-width: 0;
+}
+
+.detailText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+}
+
+/* Breadcrumb: Home / Category / Product. */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-6);
+  list-style: none;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.crumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-control-md);
+}
+
+.crumbSeparator {
+  color: var(--color-text-tertiary);
+}
+
+.detailPrice {
+  font-size: var(--font-size-xl);
+  line-height: var(--font-line-height-xl);
+  font-weight: var(--font-weight-medium);
+}
+
+/* "In stock" under the buttons: a dot and the words. */
+.stock {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  color: var(--color-text-secondary);
+}
+
+.stockDot {
+  flex: none;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-md);
+  background-color: var(--color-status-success);
+}
+
+.description {
+  max-width: var(--size-container-narrow);
+  color: var(--color-text-secondary);
+  white-space: pre-line;
+}
+
+.buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: var(--size-panel-md);
+}
+
+/* The add button takes the rest of the row beside the stepper. */
+.buy > button {
+  flex: 1;
+  min-width: calc(var(--size-control-md) * 4);
+}
+
+@media not all and (min-width: 480px) {
+  .buy,
+  .buy > button {
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-9);
+  }
+
+  .cardBody {
+    padding: var(--space-9);
+  }
+
+  .detail {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-12);
+    align-items: start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .detail {
+    gap: var(--space-13);
+  }
+
+  .detailText h1 {
+    font-size: var(--font-size-4xl);
+    line-height: var(--font-line-height-4xl);
+  }
+}

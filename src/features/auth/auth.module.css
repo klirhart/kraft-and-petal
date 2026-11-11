@@ -1,0 +1,43 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+}
+
+.secondary {
+  color: var(--color-text-secondary);
+}
+
+.samples {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-9);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-base);
+  box-shadow: var(--shadow-1);
+}
+
+.sampleList {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.sample {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6) var(--space-9);
+  padding-block: var(--space-8);
+  border-top: var(--space-1) solid var(--color-border-subtle);
+}
+
+.sampleText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

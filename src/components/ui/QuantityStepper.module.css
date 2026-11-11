@@ -1,0 +1,116 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.stepper {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  border: var(--space-1) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-base);
+  color: var(--color-text-primary);
+}
+
+.stepper[data-error] {
+  border: var(--space-2) solid var(--color-status-error);
+}
+
+.stepper[data-disabled] {
+  border-color: var(--color-border-subtle);
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-disabled);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-control-md);
+  min-height: var(--size-control-md);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color var(--motion-duration-instant) var(--motion-easing-standard);
+}
+
+@media (hover: hover) {
+  .button:hover:not(:disabled):not([aria-disabled='true']) {
+    background-color: var(--color-surface-subtle);
+  }
+}
+
+.button:active:not(:disabled):not([aria-disabled='true']) {
+  background-color: var(--color-surface-kraft);
+}
+
+/* At its limit: still focusable, ignores presses. */
+.button[aria-disabled='true'],
+.button:disabled {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+.value {
+  width: var(--size-control-md);
+  min-height: var(--size-control-md);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: inherit;
+  font-size: var(--font-size-lg);
+  line-height: var(--font-line-height-lg);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  appearance: textfield;
+}
+
+.value::-webkit-outer-spin-button,
+.value::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.message,
+.error {
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-base);
+  color: var(--color-text-secondary);
+}
+
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  color: var(--color-status-error);
+}
+
+/* Compact size for stock editing: dashboard, wide screens, fine pointers. */
+.sm .value {
+  width: 6ch;
+}
+
+@media (min-width: 1024px) and (pointer: fine) {
+  .sm .button {
+    width: var(--size-control-sm);
+    min-height: var(--size-control-sm);
+  }
+
+  .sm .value {
+    min-height: var(--size-control-sm);
+    font-size: var(--font-size-md);
+    line-height: var(--font-line-height-base);
+  }
+}

@@ -1,0 +1,118 @@
+.list {
+  display: flex;
+  list-style: none;
+}
+
+.inline,
+.footer {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.stacked,
+.sidebar {
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-height: var(--size-control-md);
+  padding: var(--space-6) var(--space-8);
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+  font-weight: var(--font-weight-medium);
+  text-align: start;
+  text-decoration-line: none;
+  cursor: pointer;
+  transition: background-color var(--motion-duration-instant) var(--motion-easing-standard);
+}
+
+.stackedItem,
+.sidebarItem {
+  width: 100%;
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+}
+
+.inlineItem .label,
+.footerItem .label {
+  flex: none;
+}
+
+@media (hover: hover) {
+  .item:hover {
+    background-color: var(--color-surface-subtle);
+    color: var(--color-text-primary);
+  }
+}
+
+.item:active {
+  background-color: var(--color-surface-kraft);
+  color: var(--color-text-primary);
+}
+
+/* On kraft (sidebar, footer) the pressed fill is the page surface. */
+.sidebarItem:active,
+.footerItem:active {
+  background-color: var(--color-surface-muted);
+}
+
+.item[aria-current='page'] {
+  color: var(--color-text-inverse);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* The current-page bar: under the item in a row, on the leading edge in a stack. */
+.item[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  border-radius: var(--radius-md);
+  background-color: var(--color-text-inverse);
+}
+
+.inlineItem[aria-current='page']::after,
+.footerItem[aria-current='page']::after {
+  inset-inline: var(--space-8);
+  bottom: var(--space-6);
+  height: var(--space-2);
+}
+
+.stackedItem[aria-current='page']::after,
+.sidebarItem[aria-current='page']::after {
+  inset-block: var(--space-6);
+  inset-inline-start: 0;
+  width: var(--space-3);
+}
+
+.sidebarItem[aria-current='page'] {
+  background-color: var(--color-surface-base);
+}
+
+.count {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--size-icon-md);
+  min-height: var(--size-icon-md);
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-md);
+  background-color: var(--color-action-primary);
+  color: var(--color-text-on-action);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-base);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+}

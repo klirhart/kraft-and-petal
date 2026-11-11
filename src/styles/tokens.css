@@ -1,0 +1,182 @@
+/*
+ * Kraft & Petal design tokens.
+ *
+ * The only file that may hold raw colour, size, shadow or timing values.
+ * Everything else reads these custom properties. Names and values follow the
+ * design guidelines (section 2): a token such as `color.text.primary` becomes
+ * `--color-text-primary`; dots become hyphens and camelCase is split
+ * (`font.lineHeight.base` becomes `--font-line-height-base`).
+ *
+ * 1. Tokens from the brief. Names kept; colour, font, radius and shadow
+ *    values follow the restyle (cream page, deep green text, lime actions).
+ * 2. The 51 semantic tokens the guidelines add, same names, restyled values.
+ * 3. Tokens the restyle adds.
+ * 4. Illustration palette.
+ *
+ * tests/unit/tokens.test.ts checks every name and value here, and the
+ * contrast of every pairing the components use.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* ------------------------------------------------------------------
+   * 1. Brief tokens
+   * ------------------------------------------------------------------ */
+
+  /* Body and interface face: Figtree, self-hosted (public/fonts). */
+  --font-family-primary: Figtree;
+  --font-family-stack: Figtree, -apple-system, Helvetica Neue, Droid Sans, Arial, sans-serif;
+  --font-size-base: 14px;
+  --font-weight-base: 400;
+  --font-line-height-base: 16px;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 13.33px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
+  --font-size-4xl: 40px;
+
+  --color-text-primary: #1c4532;
+  --color-text-secondary: #4a5f50;
+  /* Passes AA on the base, muted, subtle and tint surfaces. Never on kraft. */
+  --color-text-tertiary: #566b5b;
+  /* A mid green: the link colour, not inverse text (see text.onInverse). */
+  --color-text-inverse: #256a3d;
+  /* The raised surface: cards, inputs, panels, drawers and dialogs. */
+  --color-surface-base: #fffaeb;
+  /* The page. */
+  --color-surface-muted: #fff3d1;
+
+  --space-1: 1px;
+  --space-2: 2px;
+  --space-3: 3px;
+  --space-4: 4px;
+  --space-5: 6px;
+  --space-6: 8px;
+  /* Off the 4px rhythm. Defined, not assigned to any component. */
+  --space-7: 9px;
+  --space-8: 12px;
+
+  --radius-xs: 8px;
+  --radius-sm: 20px;
+  --radius-md: 999999px;
+  --shadow-1:
+    rgba(92, 64, 8, 0.05) 0px 1px 3px 0px,
+    rgba(92, 64, 8, 0.09) 0px 10px 24px -6px;
+  --shadow-2: rgba(92, 64, 8, 0.2) 0px 16px 48px 0px;
+  --motion-duration-instant: 200ms;
+
+  /* ------------------------------------------------------------------
+   * 2. Semantic tokens added by the guidelines (2.3)
+   * ------------------------------------------------------------------ */
+
+  /* Colour */
+  --color-surface-subtle: #fbe8b6;
+  --color-surface-kraft: #f6dc9c;
+  --color-surface-overlay: rgba(28, 69, 50, 0.48);
+  --color-surface-error: #fde3d6;
+  --color-surface-success: #e3f0c4;
+  --color-surface-warning: #ffe5a3;
+  --color-border-subtle: #ecd9a4;
+  --color-border-strong: #557a5f;
+  --color-focus-ring: #3b4cc0;
+  /* Lime fills carry dark text. Lime is never text, a border or the only
+     boundary of a control: it has 1.3:1 against the page. */
+  --color-action-primary: #c9e26c;
+  --color-action-primary-hover: #bbd856;
+  --color-action-primary-active: #aacb40;
+  --color-action-danger: #b3361f;
+  --color-action-danger-hover: #992c18;
+  --color-action-danger-active: #7e2312;
+  /* Text on the lime fills. Danger fills use text.onDanger. */
+  --color-text-on-action: #1c4532;
+  --color-text-disabled: #8a8f7c;
+  --color-status-error: #a8321d;
+  --color-status-success: #256a3d;
+  --color-status-warning: #7a4f00;
+
+  /* Typography */
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-line-height-lg: 24px;
+  --font-line-height-xl: 28px;
+  --font-line-height-2xl: 32px;
+  --font-line-height-3xl: 40px;
+  --font-line-height-4xl: 48px;
+
+  /* Spacing */
+  --space-9: 16px;
+  --space-10: 24px;
+  --space-11: 32px;
+  --space-12: 48px;
+  --space-13: 64px;
+
+  /* Size */
+  --size-control-sm: 32px;
+  --size-control-md: 44px;
+  --size-icon-sm: 16px;
+  --size-icon-md: 20px;
+  --size-thumbnail: 64px;
+  --size-card-min: 160px;
+  --size-panel-sm: 400px;
+  --size-panel-md: 560px;
+  --size-sidebar-width: 240px;
+  --size-container-max: 1120px;
+  --size-container-narrow: 640px;
+
+  /* Motion */
+  --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-duration-loop: 1000ms;
+
+  /* Layering */
+  --z-header: 100;
+  --z-overlay: 200;
+  --z-toast: 300;
+
+  /* Breakpoints. Custom properties cannot be read inside @media conditions,
+     so media queries repeat these widths as literals. */
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+
+  /* ------------------------------------------------------------------
+   * 3. Tokens added by the restyle
+   * ------------------------------------------------------------------ */
+
+  /* Headings: Fraunces, self-hosted (public/fonts). */
+  --font-family-display: Fraunces, Georgia, Times New Roman, serif;
+  /* The largest display size: hero and feature headlines on wide screens. */
+  --font-size-5xl: 56px;
+  --font-line-height-5xl: 60px;
+  /* The dark green band (announcement bar, chosen chips, checked boxes)
+     and the text that sits on it. */
+  --color-surface-inverse: #1e4d36;
+  --color-text-on-inverse: #fff6dc;
+  --color-text-on-danger: #fffaeb;
+  /* Coral accent. 4.06:1 on the page: large display text (24px and up, or
+     18.66px bold) and decoration only, never body text. */
+  --color-accent: #d6431c;
+
+  /* ------------------------------------------------------------------
+   * 4. Illustration palette
+   *
+   * Fills for the botanical drawings only: never text, never a control.
+   * The drawings also reuse text.inverse (deep leaf green), text.primary
+   * (ink), surface.subtle (the picture frame) and action.primary (lime).
+   * ------------------------------------------------------------------ */
+  --color-illustration-petal: #f9b7cd;
+  --color-illustration-petal-deep: #f0683a;
+  --color-illustration-sun: #fbbc34;
+  --color-illustration-lilac: #b8a6f2;
+  --color-illustration-cream: #fffaeb;
+  --color-illustration-leaf: #86b85c;
+  --color-illustration-terracotta: #e9773f;
+  --color-illustration-sky: #a9b8f5;
+  --color-illustration-kraft: #ecc988;
+  --color-illustration-kraft-deep: #dbb167;
+  --color-illustration-twine: #a8742c;
+}

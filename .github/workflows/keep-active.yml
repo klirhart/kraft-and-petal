@@ -1,0 +1,50 @@
+name: Keep Supabase active
+
+# A free Supabase project pauses after a period with no activity, which takes
+# the shop offline. Once a day this job reads one row through the public API,
+# the same way a visitor's browser does. That is activity, and when the read
+# fails the run fails, which emails the repository owner.
+#
+# It uses only the two public values (the same ones the site ships), stored as
+# repository variables: SUPABASE_URL and SUPABASE_ANON_KEY. No secret is used.
+#
+# GitHub can switch a scheduled workflow off after a long stretch with no
+# repository activity. Check once a month that this job still runs.
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  read:
+    name: Read one row through the public API
+    # Until a Supabase project exists there is nothing to keep active.
+    if: vars.SUPABASE_URL != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read the categories
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::The repository variable SUPABASE_ANON_KEY is not set."
+            exit 1
+          fi
+          body="$(curl --fail-with-body --silent --show-error \
+            --max-time 30 --retry 2 --retry-delay 10 \
+            --header "apikey: ${SUPABASE_ANON_KEY}" \
+            "${SUPABASE_URL%/}/rest/v1/categories?select=slug&limit=1")" || {
+            echo "::error::Supabase did not answer. The project may be paused: open the Supabase dashboard and restore it."
+            echo "$body"
+            exit 1
+          }
+          if ! grep -q '"slug"' <<<"$body"; then
+            echo "::error::Supabase answered, but returned no category. Check that the migrations and seed are applied."
+            echo "$body"
+            exit 1
+          fi
+          echo "Supabase answered with a category. The project is active."

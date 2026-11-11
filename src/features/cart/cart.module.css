@@ -1,0 +1,150 @@
+.lines {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.line {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-block: var(--space-8);
+  border-top: var(--space-1) solid var(--color-border-subtle);
+}
+
+.line:first-child {
+  border-top: 0;
+}
+
+.lineMain {
+  display: flex;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.thumb {
+  flex: none;
+  width: var(--size-thumbnail);
+  height: var(--size-thumbnail);
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-surface-subtle);
+}
+
+.lineText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.lineName {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-control-md);
+  overflow-wrap: anywhere;
+}
+
+.lineControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.lineTotal {
+  margin-inline-start: auto;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.numbers {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.secondary {
+  color: var(--color-text-secondary);
+}
+
+.summaryBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-top: var(--space-8);
+  border-top: var(--space-1) solid var(--color-border-subtle);
+}
+
+/* Order note: a native disclosure, closed until asked for. */
+.note {
+  display: flex;
+  flex-direction: column;
+}
+
+.noteSummary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-height: var(--size-control-md);
+  border-radius: var(--radius-xs);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+  font-weight: var(--font-weight-medium);
+  text-decoration-line: underline;
+  text-underline-offset: var(--space-3);
+  list-style: none;
+  cursor: pointer;
+}
+
+.noteSummary::-webkit-details-marker {
+  display: none;
+}
+
+.noteChevron {
+  transform: rotate(-90deg);
+  transition: transform var(--motion-duration-instant) var(--motion-easing-standard);
+}
+
+.note[open] .noteChevron {
+  transform: none;
+}
+
+.note[open] .noteSummary {
+  margin-bottom: var(--space-4);
+}
+
+/* One line of reassurance under the checkout button. */
+.trust {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-6);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.summaryRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.amountSkeleton {
+  width: calc(var(--size-control-md) * 1.5);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}

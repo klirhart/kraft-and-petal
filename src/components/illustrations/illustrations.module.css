@@ -1,0 +1,153 @@
+/*
+ * Every illustration is drawn with these classes, so the whole botanical
+ * palette comes from tokens.css and nothing in the artwork holds a raw colour.
+ * Stroke widths are in SVG user units (they scale with the drawing).
+ */
+
+.kraft {
+  fill: var(--color-illustration-kraft);
+}
+
+.kraftDeep {
+  fill: var(--color-illustration-kraft-deep);
+}
+
+.twine {
+  fill: var(--color-illustration-twine);
+}
+
+.lime {
+  fill: var(--color-action-primary);
+}
+
+.petal {
+  fill: var(--color-illustration-petal);
+}
+
+.petalDeep {
+  fill: var(--color-illustration-petal-deep);
+}
+
+.sun {
+  fill: var(--color-illustration-sun);
+}
+
+.lilac {
+  fill: var(--color-illustration-lilac);
+}
+
+.cream {
+  fill: var(--color-illustration-cream);
+}
+
+.leaf {
+  fill: var(--color-illustration-leaf);
+}
+
+.leafDeep {
+  fill: var(--color-text-inverse);
+}
+
+.terracotta {
+  fill: var(--color-illustration-terracotta);
+}
+
+.sky {
+  fill: var(--color-illustration-sky);
+}
+
+.ink {
+  fill: var(--color-text-primary);
+}
+
+.paper {
+  fill: var(--color-surface-muted);
+}
+
+/* Soft shadow and highlight laid over a fill. */
+.shade {
+  fill: var(--color-text-primary);
+  opacity: 0.12;
+}
+
+.shine {
+  fill: var(--color-illustration-cream);
+  opacity: 0.45;
+}
+
+.line,
+.lineLeaf,
+.lineTwine,
+.lineCream,
+.lineTerracotta,
+.stitch,
+.cut,
+.vein {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.line {
+  stroke: var(--color-text-primary);
+  stroke-width: 2.5;
+}
+
+.lineLeaf {
+  stroke: var(--color-text-inverse);
+  stroke-width: 3;
+}
+
+.lineTwine {
+  stroke: var(--color-illustration-twine);
+  stroke-width: 3;
+}
+
+.lineCream {
+  stroke: var(--color-illustration-cream);
+  stroke-width: 2;
+}
+
+.lineTerracotta {
+  stroke: var(--color-illustration-terracotta);
+  stroke-width: 6;
+}
+
+.stitch {
+  stroke: var(--color-illustration-twine);
+  stroke-width: 2;
+  stroke-dasharray: 5 6;
+}
+
+/* Gaps "cut" into a leaf, drawn in the colour of the picture frame. */
+.cut {
+  stroke: var(--color-surface-subtle);
+  stroke-width: 4;
+}
+
+/* Lettering drawn inside a picture: the arched headline and the big "404". */
+.lettering,
+.letteringAccent {
+  font-family: var(--font-family-display);
+  font-variation-settings: 'SOFT' 100;
+  font-weight: var(--font-weight-semibold);
+  fill: var(--color-text-primary);
+}
+
+.letteringAccent {
+  fill: var(--color-accent);
+}
+
+.vein {
+  stroke: var(--color-text-inverse);
+  stroke-width: 1.5;
+  opacity: 0.6;
+}
+
+.thin {
+  stroke-width: 1.5;
+}
+
+.thick {
+  stroke-width: 4;
+}

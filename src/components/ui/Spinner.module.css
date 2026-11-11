@@ -1,0 +1,29 @@
+.spinner {
+  flex: none;
+  animation: spin var(--motion-duration-loop) linear infinite;
+}
+
+.sm {
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+}
+
+.md {
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+}
+
+.track {
+  stroke: currentColor;
+  stroke-opacity: 0.25;
+}
+
+.arc {
+  stroke: currentColor;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

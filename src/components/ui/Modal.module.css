@@ -1,0 +1,156 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: flex;
+}
+
+.center {
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.trailing {
+  justify-content: flex-end;
+}
+
+.leading {
+  justify-content: flex-start;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background-color: var(--color-surface-overlay);
+  cursor: default;
+}
+
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+  width: 100%;
+  max-height: 100%;
+  padding: var(--space-10);
+  background-color: var(--color-surface-base);
+  box-shadow: var(--shadow-2);
+}
+
+/* Centred modal: a bottom sheet on the smallest screens. */
+.center .panel {
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+@media (min-width: 480px) {
+  .center {
+    align-items: center;
+    padding: var(--space-10);
+  }
+
+  .center .panel {
+    border-radius: var(--radius-sm);
+  }
+
+  .center .sm {
+    max-width: var(--size-panel-sm);
+  }
+
+  .center .md {
+    max-width: var(--size-panel-md);
+  }
+
+  .trailing .panel {
+    max-width: var(--size-panel-sm);
+  }
+}
+
+/* Drawers fill the height of the viewport. */
+.trailing .panel,
+.leading .panel {
+  height: 100%;
+}
+
+.leading .panel {
+  max-width: min(var(--size-panel-sm), calc(100% - var(--space-12)));
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.title {
+  padding-top: var(--space-6);
+  font-family: var(--font-family-display);
+  font-variation-settings: 'SOFT' 100;
+  font-size: var(--font-size-xl);
+  line-height: var(--font-line-height-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-control-md);
+  height: var(--size-control-md);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-instant) var(--motion-easing-standard);
+}
+
+@media (hover: hover) {
+  .close:hover:not([aria-disabled='true']) {
+    background-color: var(--color-surface-subtle);
+  }
+}
+
+.close:active:not([aria-disabled='true']) {
+  background-color: var(--color-surface-kraft);
+}
+
+.close[aria-disabled='true'] {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+/* Only the body scrolls; title and buttons stay in view. */
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-9);
+  min-height: 0;
+  overflow-y: auto;
+  /* Room for the focus ring of controls at the edge of the scroll area. */
+  margin: calc(var(--space-4) * -1);
+  padding: var(--space-4);
+}
+
+.flushBody {
+  gap: 0;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+@media (min-width: 480px) {
+  .center .footer {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+  }
+}

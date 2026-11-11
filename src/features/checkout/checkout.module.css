@@ -1,0 +1,115 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+}
+
+.legend {
+  /* A legend ignores the fieldset gap, so it carries its own space below. */
+  padding-bottom: var(--space-9);
+}
+
+/* The delivery fields sit on a soft card. A legend is normally drawn on the
+   top edge of its fieldset; floated, it lays out inside the card like any
+   other child and still names the group. */
+fieldset.group {
+  padding: var(--space-9);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-base);
+  box-shadow: var(--shadow-1);
+}
+
+fieldset.group > .legend {
+  float: left;
+  width: 100%;
+  padding-bottom: 0;
+}
+
+.submit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+@media (min-width: 480px) {
+  .submit {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-9);
+  }
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-9);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-base);
+  box-shadow: var(--shadow-1);
+}
+
+.reviewLines {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.reviewLine {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding-block: var(--space-8);
+  border-top: var(--space-1) solid var(--color-border-subtle);
+}
+
+.reviewLine:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.thumb {
+  flex: none;
+  width: var(--size-thumbnail);
+  height: var(--size-thumbnail);
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-surface-subtle);
+}
+
+.reviewName {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.secondary {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-base);
+}
+
+.numbers {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.totals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding-top: var(--space-8);
+  border-top: var(--space-1) solid var(--color-border-subtle);
+}
+
+.totalRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-8);
+}

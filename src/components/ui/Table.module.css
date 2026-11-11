@@ -1,0 +1,68 @@
+.region {
+  overflow-x: auto;
+  border: var(--space-1) solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  background-color: var(--color-surface-base);
+}
+
+.region:focus-visible {
+  /* The container clips, so the ring draws inside it. */
+  outline-offset: calc(var(--space-2) * -1);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+}
+
+.caption {
+  padding: var(--space-8);
+  text-align: start;
+  font-weight: var(--font-weight-medium);
+}
+
+.table th,
+.table td {
+  padding: var(--space-6) var(--space-8);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.table thead th {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.table tbody th {
+  font-weight: var(--font-weight-medium);
+}
+
+.table tbody tr {
+  height: var(--size-control-md);
+  border-top: var(--space-1) solid var(--color-border-subtle);
+  transition: background-color var(--motion-duration-instant) var(--motion-easing-standard);
+}
+
+@media (hover: hover) {
+  .table tbody tr:hover {
+    background-color: var(--color-surface-subtle);
+  }
+}
+
+.table .numeric {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (min-width: 1024px) {
+  .table tbody td,
+  .table tbody th {
+    font-size: var(--font-size-sm);
+  }
+}

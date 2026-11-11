@@ -1,0 +1,36 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment files. Only .env.example (names, no values) is committed.
+.env
+.env.*
+!.env.example
+
+# Test output
+coverage
+playwright-report
+test-results
+
+# Database exports must never be committed.
+backups
+*.dump
+*.sql.gz
+*.gpg
+
+# Supabase CLI local state
+supabase/.temp
+supabase/.branches
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.sw?

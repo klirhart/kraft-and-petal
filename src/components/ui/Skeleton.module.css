@@ -1,0 +1,66 @@
+.skeleton {
+  display: block;
+  background-color: var(--color-surface-kraft);
+  animation: pulse var(--motion-duration-loop) ease-in-out infinite alternate;
+}
+
+.full {
+  width: 100%;
+}
+
+.long {
+  width: 80%;
+}
+
+.medium {
+  width: 55%;
+}
+
+.short {
+  width: 30%;
+}
+
+.text {
+  height: var(--font-line-height-base);
+  border-radius: var(--radius-xs);
+}
+
+.title {
+  height: var(--font-line-height-lg);
+  border-radius: var(--radius-xs);
+}
+
+.button {
+  height: var(--size-control-md);
+  border-radius: var(--radius-md);
+}
+
+.row {
+  height: var(--size-control-md);
+  border-radius: var(--radius-xs);
+}
+
+.image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+}
+
+.chip {
+  flex: none;
+  width: calc(var(--size-control-md) * 2);
+  height: var(--size-control-md);
+  border-radius: var(--radius-md);
+}
+
+.thumbnail {
+  flex: none;
+  width: var(--size-thumbnail);
+  height: var(--size-thumbnail);
+  border-radius: var(--radius-xs);
+}
+
+@keyframes pulse {
+  to {
+    opacity: 0.5;
+  }
+}

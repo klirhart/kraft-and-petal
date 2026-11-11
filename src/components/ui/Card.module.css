@@ -1,0 +1,81 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+  padding: var(--space-8);
+  /* Transparent at rest: the soft shadow draws the edge. The border still
+     shows in forced-colour modes, where shadows are dropped. */
+  border: var(--space-1) solid transparent;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-base);
+  box-shadow: var(--shadow-1);
+  transition:
+    border-color var(--motion-duration-instant) var(--motion-easing-standard),
+    transform var(--motion-duration-instant) var(--motion-easing-standard),
+    background-color var(--motion-duration-instant) var(--motion-easing-standard);
+}
+
+.flush {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* The title link's click area covers the card. */
+.stretchedLink {
+  color: var(--color-text-primary);
+  text-decoration-line: none;
+}
+
+.stretchedLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+}
+
+/* Other controls sit above that area. */
+.control {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hover */
+@media (hover: hover) {
+  .interactive:hover {
+    border-color: var(--color-border-subtle);
+    transform: translateY(calc(var(--space-2) * -1));
+  }
+
+  .interactive:hover .stretchedLink {
+    color: var(--color-text-primary);
+    text-decoration-line: underline;
+  }
+}
+
+/* Focus-visible: the ring is on the link or control; the card's edge shows too. */
+.interactive:focus-within {
+  border-color: var(--color-border-subtle);
+}
+
+/* Active: while the title link is pressed. */
+.interactive:has(.stretchedLink:active) {
+  background-color: var(--color-surface-subtle);
+  transform: none;
+}
+
+.stretchedLink:active {
+  background-color: transparent;
+}
+
+.card[aria-busy='true'] {
+  cursor: progress;
+}
+
+@media (min-width: 768px) {
+  .card:not(.flush) {
+    padding: var(--space-9);
+  }
+}
