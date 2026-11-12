@@ -14,11 +14,11 @@ const PRODUCT_COLUMNS =
   'images:product_images(id, created_at, product_id, storage_path, alt_text, sort_order)'
 
 const ORDER_COLUMNS =
-  'id, created_at, customer_id, status, total_cents, delivery_date, delivery_address, note, ' +
+  'id, created_at, customer_id, status, total_cents, delivery_date, delivery_address, note, payment_method, payment_status, payment_reference, payment_proof_path, ' +
   'items:order_items(id, created_at, order_id, product_id, product_name, quantity, unit_price_cents)'
 
 
-type OrderRowWithCustomer = Order & { customer?: { full_name: string } | null }
+type OrderRowWithCustomer = Order & { customer?: { full_name: string; customer_number: number } | null }
 
 /** Messages raised on purpose by the database functions in the migration. */
 const DATABASE_SIGNALS: Record<string, DataError['code']> = {
@@ -102,7 +102,7 @@ function sortImages(product: Product): Product {
 function toOrder(row: OrderRowWithCustomer): Order {
   const { customer, ...order } = row
   const items: OrderItem[] = order.items ?? []
-  return customer ? { ...order, items, customer_name: customer.full_name } : { ...order, items }
+  return customer ? { ...order, items, customer_name: customer.full_name, customer_number: customer.customer_number } : { ...order, items }
 }
 
 export function createSupabaseDataSource(supabase: SupabaseClient): DataSource {
@@ -110,7 +110,7 @@ export function createSupabaseDataSource(supabase: SupabaseClient): DataSource {
     if (!user) return null
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, created_at, user_id, full_name, role')
+      .select('id, created_at, user_id, full_name, role, customer_number')
       .eq('user_id', user.id)
       .maybeSingle()
     if (error) throw fromPostgrest(error)
@@ -261,21 +261,38 @@ export function createSupabaseDataSource(supabase: SupabaseClient): DataSource {
       async place(input) {
         // The database function reads prices, checks stock and writes the
         // order in one transaction. The browser only says what and where.
-        const placed = await supabase.rpc('place_order', {
+        const placed = await supabase.rpc('place_manual_order', {
           p_items: input.items,
           p_delivery_date: input.delivery_date,
           p_delivery_address: input.delivery_address,
           p_note: input.note,
           p_request_id: input.request_id ?? null,
+          p_payment_method: input.payment_method ?? 'cod',
+          p_payment_reference: input.payment_reference ?? null,
+          p_payment_proof_path: input.payment_proof_path ?? null,
         })
         if (placed.error) throw fromPostgrest(placed.error)
         const { data, error } = await supabase
           .from('orders')
-          .select(ORDER_COLUMNS)
+          .select(`${ORDER_COLUMNS}, customer:profiles(full_name, customer_number)`)
           .eq('id', placed.data as string)
           .single()
         if (error) throw fromPostgrest(error)
         return toOrder(data as unknown as OrderRowWithCustomer)
+      },
+
+      async uploadPaymentProof(file, requestId) {
+        const { data: auth } = await supabase.auth.getUser()
+        const user = auth.user
+        if (!user) throw new DataError('auth-required', 'Sign in to upload payment proof.')
+        if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+          throw new DataError('invalid', 'Use a PNG, JPG or WebP image smaller than 5 MB.')
+        }
+        const extension = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg'
+        const path = `${user.id}/${requestId}.${extension}`
+        const { error } = await supabase.storage.from('payment-proofs').upload(path, file, { upsert: false, contentType: file.type })
+        if (error && !/already exists|duplicate/i.test(error.message)) throw new DataError('unknown', 'Could not upload proof. Please try again.', { cause: error })
+        return path
       },
 
       async listMine() {
@@ -286,7 +303,7 @@ export function createSupabaseDataSource(supabase: SupabaseClient): DataSource {
         // orders; Row Level Security is what stops customers seeing others'.
         const { data, error } = await supabase
           .from('orders')
-          .select(ORDER_COLUMNS)
+          .select(`${ORDER_COLUMNS}, customer:profiles(full_name, customer_number)`)
           .eq('customer_id', session.userId)
           .order('created_at', { ascending: false })
         if (error) throw fromPostgrest(error)
@@ -398,7 +415,7 @@ export function createSupabaseDataSource(supabase: SupabaseClient): DataSource {
       async listOrders() {
         const { data, error } = await supabase
           .from('orders')
-          .select(`${ORDER_COLUMNS}, customer:profiles(full_name)`)
+          .select(`${ORDER_COLUMNS}, customer:profiles(full_name, customer_number)`)
           .order('created_at', { ascending: false })
         if (error) throw fromPostgrest(error)
         return ((data ?? []) as unknown as OrderRowWithCustomer[]).map((row) =>

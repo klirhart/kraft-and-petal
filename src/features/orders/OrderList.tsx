@@ -6,15 +6,16 @@ export interface OrderListProps {
   orders: Order[]
   onUpdateStatus?: (order: Order, status: OrderStatus) => Promise<void>
   headingLevel?: 2 | 3
+  customerView?: boolean
 }
 
 /** Card list: one order per card, one card per row at every width. */
-export function OrderList({ orders, onUpdateStatus, headingLevel }: OrderListProps) {
+export function OrderList({ orders, onUpdateStatus, headingLevel, customerView }: OrderListProps) {
   return (
     <ul className={styles.list}>
       {orders.map((order) => (
         <li key={order.id}>
-          <OrderCard order={order} onUpdateStatus={onUpdateStatus} headingLevel={headingLevel} />
+          <OrderCard order={order} onUpdateStatus={onUpdateStatus} headingLevel={headingLevel} customerView={customerView} />
         </li>
       ))}
     </ul>

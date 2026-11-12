@@ -1,8 +1,6 @@
-import { SHOP_CONFIG } from '@/lib/config'
 import { data } from '@/lib/data'
 import { DataError } from '@/lib/errors'
 import type { Order, PlaceOrderInput } from '@/types'
-import { getPaymentProvider, type PaymentProvider } from './payment'
 
 export type CheckoutResult =
   | { status: 'placed'; order: Order }
@@ -14,44 +12,25 @@ export interface CheckoutRequest extends Omit<PlaceOrderInput, 'request_id'> {
   expectedTotalCents: number
   /** One-time key for this checkout attempt. */
   requestId: string
-  testOutcome?: string
+  paymentFile?: File | null
 }
 
-/**
- * Takes the payment through the provider, then asks the backend to create
- * the order. The backend sets prices, total, customer and status itself;
- * nothing here is trusted for those.
- */
-export async function checkout(
-  request: CheckoutRequest,
-  provider: PaymentProvider = getPaymentProvider(),
-): Promise<CheckoutResult> {
-  let payment
-  try {
-    payment = await provider.createPayment({
-      amountCents: request.expectedTotalCents,
-      currency: SHOP_CONFIG.currency,
-      reference: request.requestId,
-      testOutcome: request.testOutcome,
-    })
-  } catch {
-    return {
-      status: 'failed',
-      kind: 'network',
-      message: "We couldn't reach the payment service. You haven't been charged. Try again.",
+/** Orders are unpaid until an operator verifies an actual transfer (or collects COD). */
+export async function checkout(request: CheckoutRequest): Promise<CheckoutResult> {
+  if (!request.payment_method) {
+    return { status: 'failed', kind: 'payment', message: 'Select a payment method.' }
+  }
+  if (request.payment_method !== 'cod' && !request.payment_reference?.trim() && !request.paymentFile) {
+    return { status: 'failed', kind: 'payment', message: 'Enter a transaction reference or upload payment proof.' }
+  }
+  let proofPath = request.payment_proof_path ?? null
+  if (request.paymentFile) {
+    try {
+      proofPath = await data.orders.uploadPaymentProof(request.paymentFile, request.requestId)
+    } catch {
+      return { status: 'failed', kind: 'network', message: 'Could not upload the proof image. Try again or enter a transaction reference.' }
     }
   }
-  if (payment.status === 'cancelled') {
-    return { status: 'failed', kind: 'payment', message: "The payment was cancelled. You haven't been charged." }
-  }
-  if (payment.status === 'failed') {
-    return {
-      status: 'failed',
-      kind: 'payment',
-      message: "The payment didn't go through, so we haven't placed your order. Try again or use another way to pay.",
-    }
-  }
-
   try {
     const order = await data.orders.place({
       items: request.items,
@@ -59,6 +38,9 @@ export async function checkout(
       delivery_address: request.delivery_address,
       note: request.note,
       request_id: request.requestId,
+      payment_method: request.payment_method,
+      payment_reference: request.payment_reference?.trim() || null,
+      payment_proof_path: proofPath,
     })
     return { status: 'placed', order }
   } catch (error) {

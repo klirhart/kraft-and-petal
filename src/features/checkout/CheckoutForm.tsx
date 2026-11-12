@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { Alert, Button, ErrorSummary, Input, RadioGroup, Textarea } from '@/components/ui'
 import { useForm } from '@/hooks/useForm'
-import { LIMITS, SHOP_CONFIG } from '@/lib/config'
+import { LIMITS } from '@/lib/config'
 import { formatDate, formatPrice } from '@/lib/formatters'
 import { newUuid } from '@/lib/ids'
 import {
@@ -14,7 +14,6 @@ import {
 } from '@/lib/validators'
 import type { Order } from '@/types'
 import styles from './checkout.module.css'
-import { getPaymentProvider } from './payment'
 import { checkout, type CheckoutResult } from './placeOrder'
 import { clearSavedDelivery, readSavedDelivery, saveDelivery } from '@/lib/savedDelivery'
 
@@ -38,9 +37,10 @@ type Failure = Extract<CheckoutResult, { status: 'failed' }>
  * request carries a one-time key so a repeat cannot create a second order.
  */
 export function CheckoutForm({ items, totalCents, review, blockedReason, onPlaced }: CheckoutFormProps) {
-  const provider = getPaymentProvider()
   const form = useForm<DeliveryValues>(readSavedDelivery(), validateDelivery)
-  const [testOutcome, setTestOutcome] = useState(provider.testOutcomes?.[0]?.value ?? 'paid')
+  const [paymentMethod, setPaymentMethod] = useState<'gcash' | 'maya' | 'gotyme' | 'cod'>('cod')
+  const [paymentReference, setPaymentReference] = useState('')
+  const [paymentFile, setPaymentFile] = useState<File | null>(null)
   const [pending, setPending] = useState(false)
   const [failure, setFailure] = useState<Failure | null>(null)
   const [summaryShown, setSummaryShown] = useState(false)
@@ -78,15 +78,16 @@ export function CheckoutForm({ items, totalCents, review, blockedReason, onPlace
       note: form.values.note.trim() || null,
       expectedTotalCents: totalCents,
       requestId: requestId.current,
-      testOutcome: provider.isSimulated ? testOutcome : undefined,
+      payment_method: paymentMethod,
+      payment_reference: paymentMethod !== 'cod' ? paymentReference : null,
+      paymentFile: paymentMethod !== 'cod' ? paymentFile : null,
     })
     if (result.status === 'placed') {
       clearSavedDelivery()
       onPlaced(result.order)
       return
     }
-    // A failed attempt changed nothing, so the next try gets a fresh key.
-    requestId.current = newUuid()
+    // Keep the request key on failures: if the server placed the order but the response was lost, retrying must remain idempotent.
     setFailure(result)
     setPending(false)
     requestAnimationFrame(() => failureRef.current?.focus())
@@ -158,23 +159,32 @@ export function CheckoutForm({ items, totalCents, review, blockedReason, onPlace
         <h2 id="checkout-payment-title" className="type-heading-3">
           Payment
         </h2>
-        {provider.isSimulated ? (
-          <>
-            <Alert variant="warning" live={false} title="Payment is simulated">
-              {SHOP_CONFIG.name} isn&apos;t taking real payments yet. No card is needed and no money moves.
-            </Alert>
-            {provider.testOutcomes ? (
-              <RadioGroup
-                legend="What should the simulated payment do?"
-                name="test-outcome"
-                value={testOutcome}
-                options={provider.testOutcomes}
-                onChange={setTestOutcome}
-                disabled={pending}
-              />
-            ) : null}
-          </>
-        ) : null}
+        <RadioGroup
+          legend="Choose your payment method"
+          name="payment-method"
+          value={paymentMethod}
+          options={[
+            { value: 'gcash', label: 'GCash (QR)' },
+            { value: 'maya', label: 'Maya (QR)' },
+            { value: 'gotyme', label: 'GoTyme (QR)' },
+            { value: 'cod', label: 'Cash on Delivery (COD)' },
+          ]}
+          onChange={(value) => { setPaymentMethod(value as typeof paymentMethod); setPaymentReference(''); setPaymentFile(null) }}
+          disabled={pending}
+        />
+        {paymentMethod === 'cod' ? (
+          <p className="type-body">Pay with cash when your order is delivered.</p>
+        ) : (
+          <div className={styles.manualPayment}>
+            <p className="type-ui-strong">Scan the {paymentMethod === 'gcash' ? 'GCash' : paymentMethod === 'maya' ? 'Maya' : 'GoTyme'} QR code</p>
+            <img key={paymentMethod} src={`/payment-qr/${paymentMethod}.png`} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = "/payment-qr/qr-placeholder.svg" }} alt={`${paymentMethod} payment QR image — add your official code before accepting payments`} className={styles.paymentQr} />
+            <p className="type-body">Pay {formatPrice(totalCents)} in your payment app. Then enter your transaction reference or upload a screenshot. Your order stays pending until the payment is verified.</p>
+            <Input label="Transaction reference" value={paymentReference} onChange={(event) => setPaymentReference(event.target.value)} maxLength={120} autoComplete="off" />
+            <label className="type-ui-strong" htmlFor="payment-proof">Payment screenshot (PNG, JPG, WebP; max 5 MB)</label>
+            <input id="payment-proof" type="file" accept="image/png,image/jpeg,image/webp" disabled={pending} onChange={(event) => setPaymentFile(event.target.files?.[0] ?? null)} />
+            <p className="type-caption">A reference number or screenshot is required. Payment will not be marked as paid automatically.</p>
+          </div>
+        )}
       </section>
 
       <div className={styles.submit}>

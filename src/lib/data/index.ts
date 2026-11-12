@@ -84,7 +84,7 @@ export const data: DataSource = {
     getProductBySlug: true,
     getProductsByIds: true,
   }),
-  orders: section('orders', { place: true, listMine: true }),
+  orders: section('orders', { place: true, uploadPaymentProof: true, listMine: true }),
   admin: section('admin', {
     listProducts: true,
     createProduct: true,

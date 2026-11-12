@@ -147,6 +147,7 @@ async function buildSampleDb(now: Date): Promise<LocalDb> {
       user_id: user.id,
       full_name: user.fullName,
       role: user.role,
+      customer_number: profiles.length + 1,
     })
   }
 
@@ -395,6 +396,7 @@ export function createLocalDataSource(options: LocalDataSourceOptions = {}): Loc
           user_id: user.id,
           full_name: fullName.trim(),
           role: 'customer',
+          customer_number: Math.max(0, ...db.profiles.map((p) => p.customer_number ?? 0)) + 1,
         }
         db.users.push(user)
         db.profiles.push(profile)
@@ -454,6 +456,10 @@ export function createLocalDataSource(options: LocalDataSourceOptions = {}): Loc
     },
 
     orders: {
+      async uploadPaymentProof(_file, _requestId) {
+        // Sample mode stores no real payment proof and does not accept payments.
+        return 'sample-proof-only'
+      },
       async place(input: PlaceOrderInput) {
         const db = await open()
         const session = requireSession(db)
@@ -465,7 +471,7 @@ export function createLocalDataSource(options: LocalDataSourceOptions = {}): Loc
             )
           : undefined
         const existing = repeated && db.orders.find((entry) => entry.id === repeated.order_id)
-        if (existing) return withItems(db, existing, false)
+        if (existing) return { ...withItems(db, existing, false), customer_number: db.profiles.find(p => p.user_id === session.userId)?.customer_number }
 
         if (input.items.length === 0) {
           throw new DataError('invalid', 'Your cart is empty.')
@@ -541,6 +547,10 @@ export function createLocalDataSource(options: LocalDataSourceOptions = {}): Loc
           delivery_date: input.delivery_date,
           delivery_address: input.delivery_address.trim(),
           note: input.note?.trim() || null,
+          payment_method: input.payment_method ?? 'cod',
+          payment_status: input.payment_method && input.payment_method !== 'cod' ? 'pending_verification' : 'unpaid_cod',
+          payment_reference: input.payment_reference ?? null,
+          payment_proof_path: input.payment_proof_path ?? null,
         }
         db.orders.push(order)
         if (input.request_id) {
@@ -550,7 +560,7 @@ export function createLocalDataSource(options: LocalDataSourceOptions = {}): Loc
           ]
         }
         save(db)
-        return withItems(db, order, false)
+        return { ...withItems(db, order, false), customer_number: db.profiles.find(p => p.user_id === session.userId)?.customer_number }
       },
 
       async listMine() {
@@ -559,7 +569,7 @@ export function createLocalDataSource(options: LocalDataSourceOptions = {}): Loc
         return db.orders
           .filter((order) => order.customer_id === session.userId)
           .sort((a, b) => byCreated(b, a))
-          .map((order) => withItems(db, order, false))
+          .map((order) => ({ ...withItems(db, order, false), customer_number: db.profiles.find(p => p.user_id === session.userId)?.customer_number ?? db.profiles.findIndex(p => p.user_id === session.userId) + 1 }))
       },
     },
 

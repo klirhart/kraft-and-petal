@@ -25,6 +25,7 @@ export interface Profile {
   user_id: string
   full_name: string
   role: Role
+  customer_number?: number
 }
 
 export interface Category {
@@ -84,6 +85,11 @@ export interface Order {
   items: OrderItem[]
   /** Only present where the reader may see customer profiles (operators). */
   customer_name?: string
+  customer_number?: number
+  payment_method?: 'gcash' | 'maya' | 'gotyme' | 'cod' | null
+  payment_status?: 'pending_verification' | 'unpaid_cod' | 'paid' | null
+  payment_reference?: string | null
+  payment_proof_path?: string | null
 }
 
 export interface Session {
@@ -121,6 +127,9 @@ export interface PlaceOrderInput {
   note: string | null
   /** One-time key (a UUID). Sending the same key again returns the first order. */
   request_id?: string
+  payment_method?: 'gcash' | 'maya' | 'gotyme' | 'cod'
+  payment_reference?: string | null
+  payment_proof_path?: string | null
 }
 
 export interface ProductInput {

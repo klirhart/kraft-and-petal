@@ -40,6 +40,55 @@
   box-shadow: var(--shadow-2);
 }
 
+/* Warm cream glass with a sage tint, drawn from the shop palette. */
+.glass .scrim {
+  background:
+    radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--color-surface-success) 18%, transparent), transparent 70%),
+    color-mix(in srgb, var(--color-text-primary) 32%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.glass .panel {
+  border: 1px solid color-mix(in srgb, var(--color-surface-base) 80%, transparent);
+  background: var(--color-surface-muted);
+  box-shadow:
+    0 24px 72px color-mix(in srgb, var(--color-text-primary) 22%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--color-surface-base) 95%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--color-surface-kraft) 35%, transparent);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass .panel {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-surface-base) 88%, transparent),
+      color-mix(in srgb, var(--color-surface-muted) 78%, transparent) 60%,
+      color-mix(in srgb, var(--color-surface-success) 82%, transparent)
+    );
+    -webkit-backdrop-filter: blur(24px) saturate(125%);
+    backdrop-filter: blur(24px) saturate(125%);
+  }
+}
+
+.glass .close {
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 12%, transparent);
+  background-color: color-mix(in srgb, var(--color-surface-base) 45%, transparent);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass .panel {
+    background: var(--color-surface-muted);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .glass .scrim {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
 /* Centred modal: a bottom sheet on the smallest screens. */
 .center .panel {
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;

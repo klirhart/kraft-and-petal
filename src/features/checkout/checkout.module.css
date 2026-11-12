@@ -113,3 +113,7 @@ fieldset.group > .legend {
   justify-content: space-between;
   gap: var(--space-8);
 }
+
+/* Manual QR payment; uses existing fonts and colours. */
+.manualPayment { display: flex; flex-direction: column; gap: var(--space-6); }
+.paymentQr { width: min(100%, 280px); height: auto; object-fit: contain; border-radius: var(--radius-md, 12px); }

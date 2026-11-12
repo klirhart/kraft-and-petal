@@ -45,6 +45,7 @@ export interface DataSource {
   orders: {
     /** Prices, totals and stock are worked out by the backend, not the caller. */
     place(input: PlaceOrderInput): Promise<Order>
+    uploadPaymentProof(file: File, requestId: string): Promise<string>
     listMine(): Promise<Order[]>
   }
   /** Operator only. */

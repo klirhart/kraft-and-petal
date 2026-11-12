@@ -23,6 +23,7 @@ export interface OrderCardProps {
   headingLevel?: 2 | 3
   /** Leaves out the card frame, for use as a table row detail. */
   bare?: boolean
+  customerView?: boolean
 }
 
 /** "Peony Posy × 2, Eucalyptus Bunch × 1 and 3 more". */
@@ -150,24 +151,32 @@ function StatusControls({
  * not change on hover; the disclosure, select and button inside carry the
  * interactive states. Tab order: disclosure, then (operator) select, button.
  */
-export function OrderCard({ order, onUpdateStatus, headingLevel = 2, bare = false }: OrderCardProps) {
+export function OrderCard({ order, onUpdateStatus, headingLevel = 2, bare = false, customerView = false }: OrderCardProps) {
   const [open, setOpen] = useState(false)
   const panelId = useId()
   const disclosureRef = useRef<HTMLButtonElement>(null)
   const Heading = headingLevel === 2 ? 'h2' : 'h3'
   const number = formatOrderNumber(order.id)
+  const deliveryLines = order.delivery_address.split('\n')
+  const recipient = deliveryLines.length >= 3 ? deliveryLines[0] : null
+  const lastLine = deliveryLines[deliveryLines.length - 1] ?? ''
+  const contact = lastLine.startsWith('Phone ') ? lastLine.slice(6) : null
+  const streetAddress = recipient ? deliveryLines.slice(1, contact ? -1 : undefined).join('\n') : order.delivery_address
 
   const content = (
     <>
       <div className={styles.header}>
         <div className={styles.headerText}>
-          <Heading className="type-ui-strong">Order {number}</Heading>
+          <Heading className="type-ui-strong">{customerView && order.customer_number ? `Customer ID: CUST-${String(order.customer_number).padStart(6, '0')}` : `Order ${number}`}</Heading>
           <p className={`type-caption ${styles.secondary}`}>Placed {formatDateTime(order.created_at)}</p>
         </div>
         <OrderStatusBadge status={order.status} />
       </div>
 
+      {customerView && order.payment_status ? <p className="type-caption">Payment: {order.payment_status === 'pending_verification' ? 'Pending Verification' : order.payment_status === 'unpaid_cod' ? 'Unpaid — Cash on Delivery' : 'Paid'}</p> : null}
+      {customerView ? <h3 className="type-ui-strong">Delivery information</h3> : null}
       <dl className={styles.facts}>
+        {customerView && recipient ? <div className={styles.fact}><dt className={`type-caption ${styles.secondary}`}>Recipient</dt><dd className="type-ui">{recipient}</dd></div> : null}
         {order.customer_name ? (
           <div className={styles.fact}>
             <dt className={`type-caption ${styles.secondary}`}>Customer</dt>
@@ -180,20 +189,23 @@ export function OrderCard({ order, onUpdateStatus, headingLevel = 2, bare = fals
         </div>
         <div className={styles.fact}>
           <dt className={`type-caption ${styles.secondary}`}>Delivery address</dt>
-          <dd className={`type-ui ${styles.typed} ${styles.address}`}>{order.delivery_address}</dd>
+          <dd className={`type-ui ${styles.typed} ${styles.address}`}>{customerView ? streetAddress : order.delivery_address}</dd>
         </div>
-        {order.note ? (
+        {customerView && contact ? <div className={styles.fact}><dt className={`type-caption ${styles.secondary}`}>Contact number</dt><dd className="type-ui">{contact}</dd></div> : null}
+        {!customerView && order.note ? (
           <div className={styles.fact}>
             <dt className={`type-caption ${styles.secondary}`}>Note</dt>
             <dd className={`type-ui ${styles.typed}`}>{order.note}</dd>
           </div>
         ) : null}
-        <div className={styles.fact}>
+        {!customerView ? <div className={styles.fact}>
           <dt className={`type-caption ${styles.secondary}`}>Items</dt>
           <dd className={`type-ui ${styles.typed}`}>{summarizeItems(order)}</dd>
-        </div>
+        </div> : null}
       </dl>
 
+      {customerView && order.note ? <div className={styles.fact}><h3 className="type-ui-strong">Order notes</h3><p className="type-ui">{order.note}</p></div> : null}
+      {customerView ? <h3 className="type-ui-strong">Ordered products</h3> : null}
       <div className={styles.disclosure}>
         <Button
           ref={disclosureRef}
@@ -212,12 +224,13 @@ export function OrderCard({ order, onUpdateStatus, headingLevel = 2, bare = fals
               <p className={`type-ui ${styles.typed}`}>
                 {item.product_name} <span className={styles.secondary}>× {item.quantity}</span>
               </p>
-              <p className={`type-ui ${styles.numbers}`}>{formatPrice(item.unit_price_cents * item.quantity)}</p>
+              <p className={`type-ui ${styles.numbers}`}>{customerView ? `${formatPrice(item.unit_price_cents)} each · ` : ''}{formatPrice(item.unit_price_cents * item.quantity)}</p>
             </li>
           ))}
         </ul>
       </div>
 
+      {customerView && order.payment_method ? <section className={styles.paymentInfo}><h3 className="type-ui-strong">Payment details</h3><p className="type-ui">Method: {order.payment_method === 'cod' ? 'Cash on Delivery' : order.payment_method.toUpperCase()}</p><p className="type-ui">Status: {order.payment_status === 'pending_verification' ? 'Pending Verification' : order.payment_status === 'unpaid_cod' ? 'Unpaid — Cash on Delivery' : order.payment_status === 'paid' ? 'Paid' : 'Not recorded'}</p>{order.payment_reference ? <p className="type-ui">Reference: {order.payment_reference}</p> : null}</section> : null}
       <div className={styles.footer}>
         <p className="type-ui-strong">Total</p>
         <p className={`type-ui-strong ${styles.numbers}`}>{formatPrice(order.total_cents)}</p>
@@ -228,7 +241,7 @@ export function OrderCard({ order, onUpdateStatus, headingLevel = 2, bare = fals
   )
 
   if (bare) return <div className={styles.bare}>{content}</div>
-  return <Card className={styles.card}>{content}</Card>
+  return <Card className={customerView ? styles.customerCard : styles.card}>{content}</Card>
 }
 
 /** Skeleton card: one header line, three body lines, one footer line. */

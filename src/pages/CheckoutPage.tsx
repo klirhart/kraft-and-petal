@@ -1,33 +1,40 @@
 import { useState } from 'react'
-import { Link } from 'react-router'
-import { PageContainer, PageHeader, PageTitle } from '@/components/layout'
-import { Alert, Button, ButtonLink, EmptyState, Icon, LoadingState, Skeleton } from '@/components/ui'
+import { Link, useNavigate } from 'react-router'
+import { PageContainer, PageHeader } from '@/components/layout'
+import { Alert, Button, ButtonLink, EmptyState, Icon, LoadingState, Modal, Skeleton } from '@/components/ui'
+import { useAuth } from '@/features/auth'
 import { useCart, useCartDetails } from '@/features/cart'
 import { ProductImage } from '@/features/catalog'
 import { CheckoutForm, OrderReview } from '@/features/checkout'
 import { usePageTitle } from '@/hooks/usePageTitle'
-import { formatDate, formatOrderNumber, formatPrice } from '@/lib/formatters'
+import { formatDate, formatPrice } from '@/lib/formatters'
 import type { Order } from '@/types'
 import styles from './pages.module.css'
 
 function OrderPlaced({ order }: { order: Order }) {
+  const { session } = useAuth()
+  const navigate = useNavigate()
+  const customerName = session?.profile.full_name.trim()
+
   return (
-    <PageContainer width="narrow">
-      <div className={styles.prose}>
-        <PageTitle focusOnMount>Thank you. Your order is in.</PageTitle>
-        <p className="type-body">
-          Order {formatOrderNumber(order.id)} for {formatPrice(order.total_cents)} will arrive on{' '}
-          {formatDate(order.delivery_date)}. We&apos;ll start arranging it soon.
-        </p>
-        <div className={styles.heroActions}>
-          <ButtonLink to="/account/orders">See your orders</ButtonLink>
-          <Link to="/shop" className="link-standalone">
-            Back to the shop
-            <Icon name="arrow-right" size="sm" />
-          </Link>
-        </div>
+    <Modal
+      open
+      appearance="glass"
+      title="Thank you. Your order is in."
+      onClose={() => navigate('/shop')}
+    >
+      <p className="type-body">
+        {customerName ? `${customerName}, your` : 'Your'} order totaling {formatPrice(order.total_cents)} will arrive on{' '}
+        {formatDate(order.delivery_date)}. We&apos;ll start arranging it soon.
+      </p>
+      <div className={styles.heroActions}>
+        <ButtonLink to="/account/orders">See your orders</ButtonLink>
+        <Link to="/shop" className="link-standalone">
+          Back to the shop
+          <Icon name="arrow-right" size="sm" />
+        </Link>
       </div>
-    </PageContainer>
+    </Modal>
   )
 }
 
@@ -37,9 +44,16 @@ export default function CheckoutPage() {
   const details = useCartDetails()
   const [placed, setPlaced] = useState<Order | null>(null)
 
-  if (placed) return <OrderPlaced order={placed} />
-
   const header = <PageHeader title="Checkout" lead="Tell us where and when, then check your order." />
+
+  if (placed) {
+    return (
+      <PageContainer width="narrow">
+        <PageHeader title="Checkout" lead="Your order has been placed." />
+        <OrderPlaced order={placed} />
+      </PageContainer>
+    )
+  }
 
   if (details.status === 'loading') {
     return (

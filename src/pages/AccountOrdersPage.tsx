@@ -32,7 +32,7 @@ export default function AccountOrdersPage() {
           }
         />
       ) : (
-        <OrderList orders={orders.data} />
+        <OrderList orders={orders.data} customerView />
       )}
     </PageContainer>
   )

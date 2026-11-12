@@ -277,7 +277,7 @@ describe('customer routes', () => {
     renderApp('/checkout')
     await pageHeading('Checkout')
     const submit = await screen.findByRole('button', { name: 'Place order, ₱2,800.00' }, WAIT)
-    expect(screen.getByText(/Payment is simulated/)).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Cash on Delivery (COD)' })).toBeChecked()
     await expectAccessiblePage('Checkout')
 
     await user.click(submit)
@@ -299,12 +299,19 @@ describe('customer routes', () => {
     await user.type(date, date.getAttribute('min') ?? '')
     await user.click(screen.getByRole('button', { name: 'Place order, ₱2,800.00' }))
 
-    const thanks = await pageHeading('Thank you. Your order is in.')
-    await waitFor(() => expect(thanks).toHaveFocus())
+    const confirmation = await screen.findByRole('dialog', { name: 'Thank you. Your order is in.' }, WAIT)
+    expect(confirmation).toHaveAttribute('aria-modal', 'true')
+    expect(within(confirmation).getByText(/Maya Linden, your order totaling/)).toBeInTheDocument()
+    expect(within(confirmation).getByRole('link', { name: 'See your orders' })).toHaveAttribute('href', '/account/orders')
+    expect(within(confirmation).getByRole('link', { name: 'Back to the shop' })).toHaveAttribute('href', '/shop')
+    await waitFor(() => expect(within(confirmation).getByRole('button', { name: 'Close' })).toHaveFocus())
     expect(window.localStorage.getItem('kraft-petal.cart.v1')).toBe('[]')
     const orders = await data.orders.listMine()
     expect(orders[0]?.total_cents).toBe(product.price_cents * 2)
     await expectNoAxeViolations()
+    await user.keyboard('{Escape}')
+    await waitFor(() => expect(currentLocation()).toBe('/shop'))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
   it('/checkout: a declined payment places no order and keeps what was typed', async () => {

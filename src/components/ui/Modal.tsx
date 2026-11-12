@@ -30,6 +30,7 @@ const openOverlays: symbol[] = []
 type Placement = 'center' | 'trailing' | 'leading'
 
 interface OverlayProps {
+  appearance?: 'default' | 'glass'
   open: boolean
   onClose: () => void
   title: ReactNode
@@ -56,6 +57,7 @@ interface OverlayProps {
 }
 
 function Overlay({
+  appearance = 'default',
   open,
   onClose,
   title,
@@ -172,7 +174,7 @@ function Overlay({
   }
 
   return createPortal(
-    <div className={`${styles.root} ${styles[placement]}`}>
+    <div className={`${styles.root} ${styles[placement]} ${appearance === 'glass' ? styles.glass : ''}`}>
       <button
         type="button"
         className={styles.scrim}
@@ -224,6 +226,8 @@ function Overlay({
 }
 
 export interface ModalProps {
+  /** Frosted cream glass for branded informational overlays. */
+  appearance?: 'default' | 'glass'
   open: boolean
   onClose: () => void
   title: ReactNode
@@ -242,6 +246,7 @@ export interface ModalProps {
 }
 
 export function Modal({
+  appearance = 'default',
   open,
   onClose,
   title,
@@ -255,6 +260,7 @@ export function Modal({
   const bodyId = useId()
   return (
     <Overlay
+      appearance={appearance}
       open={open}
       onClose={onClose}
       title={title}

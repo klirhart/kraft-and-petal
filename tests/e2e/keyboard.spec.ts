@@ -106,7 +106,8 @@ test.describe('keyboard only', () => {
     await tabTo(page, /^Place order/)
     await page.keyboard.press('Enter')
 
-    await pageReady(page, 'Thank you. Your order is in.')
+    await expect(page.getByRole('dialog', { name: 'Thank you. Your order is in.' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Close', exact: true })).toBeFocused()
     await expect(page.getByRole('heading', { level: 1 })).toBeFocused()
     await tabTo(page, 'See your orders')
     await page.keyboard.press('Enter')
